@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pancreatic-organoid"
+version = "1.0.0"
+description = "Bronze/Silver/Gold RNA-seq pipeline for pancreatic cancer organoid profiling"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Wahed Shaik" }]
+keywords = ["rna-seq", "bioinformatics", "pyspark", "delta-lake", "medallion-architecture"]
+
+dependencies = [
+    "pyspark>=3.4",
+    "pandas>=1.5",
+    "numpy>=1.23",
+    "scikit-learn>=1.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+notebooks = ["matplotlib>=3.6", "jupyter>=1.0"]
+
+[project.scripts]
+pancreatic-pipeline = "pancreatic_organoid.pipeline:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "spark: requires a local SparkSession and a Java runtime (deselect with -m 'not spark')",
+]

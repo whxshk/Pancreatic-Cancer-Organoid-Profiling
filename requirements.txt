@@ -1,0 +1,17 @@
+# Runtime dependencies for the pipeline package.
+#
+# On Databricks these are already present in the runtime; this file exists for
+# local development and for running the test suite.
+#
+# PySpark additionally requires a Java runtime (Java 8, 11, or 17).
+
+pyspark>=3.4
+pandas>=1.5
+numpy>=1.23
+scikit-learn>=1.2
+
+# Testing
+pytest>=7.4
+
+# Used only by the preserved notebooks in notebooks/
+matplotlib>=3.6

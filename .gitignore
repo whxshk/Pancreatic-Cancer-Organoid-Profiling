@@ -1,0 +1,37 @@
+# Secrets — never commit storage keys, SAS tokens, or connection strings.
+.env
+.env.*
+*.key
+secrets.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Spark / Delta local artifacts
+spark-warehouse/
+metastore_db/
+derby.log
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Data — the RNA-seq matrix, GTF, and Delta tables are not redistributed here.
+data/
+*.parquet
+*.gtf
+*.gtf.gz
+
+# OS
+.DS_Store
+Thumbs.db
