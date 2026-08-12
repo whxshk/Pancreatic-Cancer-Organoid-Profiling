@@ -4,7 +4,9 @@
 
 This repository contains a real RNA-seq data engineering and machine learning project I built and ran on Databricks against Azure Data Lake Storage. It was developed as academic project work and **predates this application** — it was not created for MLH.
 
-The repository has been reorganized since that original work: the pipeline logic that lived in Jupyter/Databricks notebooks has been extracted into a tested Python package (a refactoring done with AI-assisted tooling — see [What I personally contributed](#what-i-personally-contributed)), and the credentials that were originally hard-coded in the notebooks have been removed. **The purpose of that cleanup is transparency and maintainability, not to misrepresent how the project was originally developed.** The original notebooks are preserved unchanged in [`notebooks/`](notebooks/), including the failed attempts and the fixes that followed them, so the actual development history remains inspectable. Every deviation from the notebook behaviour is listed under [Deviations from the original notebooks](#deviations-from-the-original-notebooks).
+The repository has been reorganized since that original work: the pipeline logic that lived in Jupyter/Databricks notebooks has been extracted into a tested Python package (a refactoring done with AI-assisted tooling — see [What I personally contributed](#what-i-personally-contributed)), and the credentials that were originally hard-coded in the notebooks have been removed. **The purpose of that cleanup is transparency and maintainability, not to misrepresent how the project was originally developed.**
+
+The original project was developed in Databricks notebooks; what this repository now contains is the refactored Python implementation of that work. The notebooks themselves are kept out of the current tree so the repository reflects the actual submission — a Python package — but they are preserved (credentials redacted, otherwise unchanged, failed attempts included) in this repository's Git history: [`notebooks/` at commit `a2964db`](https://github.com/whxshk/Pancreatic-Cancer-Organoid-Profiling/tree/a2964db3a3175fe7f9b42437d786da7490195927/notebooks). The development history therefore remains fully inspectable. Every deviation from the notebook behaviour is listed under [Deviations from the original notebooks](#deviations-from-the-original-notebooks).
 
 My more recent projects cannot be shown here:
 
@@ -182,7 +184,6 @@ All models run on the sample-level matrix — one row per organoid, ~110 rows �
 │   ├── modeling.py         PCA, K-Means, Random Forest, metrics
 │   └── pipeline.py         stage orchestration + CLI
 ├── tests/                  43 tests (see Testing)
-├── notebooks/              original Databricks notebooks, preserved
 ├── docs/                   original project documentation (Phase I, Phase II)
 ├── reports/                Power BI report
 ├── pyproject.toml
@@ -195,8 +196,8 @@ All models run on the sample-level matrix — one row per organoid, ~110 rows �
 |---|---|
 | All transformation, annotation, normalization, feature, and modeling logic | **Implemented in this repository** and unit-tested on synthetic fixtures |
 | Reading the raw matrix / GTF, writing any Delta table, running the pipeline end to end | **Requires Databricks + Azure.** Needs the ADLS account, credentials, and the source data |
-| Schema exploration, raw-file previews, min/max range checks, storage connectivity checks | **Exploratory**, kept in `notebooks/` only |
-| PCA scatter, predicted-vs-actual, and residual plots | **Exploratory**, in `notebooks/Modeling.ipynb` |
+| Schema exploration, raw-file previews, min/max range checks, storage connectivity checks | **Exploratory**, only in the archived notebooks (Git history, see above) |
+| PCA scatter, predicted-vs-actual, and residual plots | **Exploratory**, in the archived `Modeling.ipynb` (Git history) |
 | Power BI report | **Static artifact** in `reports/`, not produced by this code |
 
 ## How to run
@@ -278,7 +279,7 @@ Tests split into two groups: 12 are pure Python and run anywhere; 31 use a local
 
 ## Example outputs and results
 
-All figures below are actual recorded outputs from the original Databricks runs, preserved in `notebooks/`.
+All figures below are actual recorded outputs from the original Databricks runs, preserved in the archived notebooks in Git history.
 
 **Scale.** 111 columns in the raw matrix (1 gene column + 110 samples). Raw counts range from `0.0` to `896,464.0`, consistent with untransformed RNA-seq.
 
@@ -306,7 +307,7 @@ MAPE:       3.31%
 
 These metrics are computed on the 20% held-out split. **They should be read in light of the target/feature relationship described above** — they reflect an algebraic identity in the feature set rather than predictive power.
 
-**Power BI report** (`reports/organoid_profiling_dashboard.pbix`): a single page with 7 visuals over the annotated counts — two clustered bar charts (total count by gene name; average count by gene ID), a pivot table of counts by gene, a treemap of counts by gene and sample, and two card visuals. The PCA, prediction-quality, and residual plots are matplotlib figures in `notebooks/Modeling.ipynb`, not Power BI visuals.
+**Power BI report** (`reports/organoid_profiling_dashboard.pbix`): a single page with 7 visuals over the annotated counts — two clustered bar charts (total count by gene name; average count by gene ID), a pivot table of counts by gene, a treemap of counts by gene and sample, and two card visuals. The PCA, prediction-quality, and residual plots are matplotlib figures in the archived `Modeling.ipynb`, not Power BI visuals.
 
 ## Limitations
 
@@ -334,14 +335,15 @@ Everything that differs from the notebook behaviour, in full:
 
 1. **Credentials removed.** The notebooks hard-coded an Azure storage account key. It is now read from the environment or passed explicitly, and never stored in source. In the preserved notebooks, the key, the storage account name, and the Databricks workspace host are replaced with `REDACTED_*` placeholders in both code and saved outputs. That credential is not in use and has not been reused anywhere.
 2. **Null filling moved before the Silver write.** The notebook wrote `silver/counts_long` and *then* applied `fillna(0)` in memory, so the persisted Silver table still contained nulls; the fill was re-applied downstream when the table was reloaded. Final results were unaffected, but the stored table did not match its documented contract. The fill now happens before the write.
-3. **Failed attempts not carried into the package.** Where a component had several attempts, only the working version was extracted. The failed attempts remain visible in `notebooks/`.
-4. **Notebook header cells added.** One markdown cell at the top of each preserved notebook explains its provenance and the redaction. No other cell was modified.
+3. **Failed attempts not carried into the package.** Where a component had several attempts, only the working version was extracted. The failed attempts remain visible in the archived notebooks in Git history.
+4. **Notebook header cells added.** One markdown cell at the top of each archived notebook explains its provenance and the redaction. No other cell was modified.
+5. **Notebooks removed from the current tree.** The `.ipynb` files were later removed from the working tree so the repository's language composition reflects the Python submission; they remain unchanged in Git history at the commit linked above. No history was rewritten.
 
 Everything else — every transformation, every aggregation, every hyperparameter, every random seed — is preserved as originally written.
 
 ## What I personally contributed
 
-All of the original project is my own work: the pipeline design, the Databricks/PySpark implementation and its debugging (the failed attempts preserved in [`notebooks/`](notebooks/) are mine too), the feature engineering, the modeling, the Power BI report, and the Phase I/II documentation in [`docs/`](docs/).
+All of the original project is my own work: the pipeline design, the Databricks/PySpark implementation and its debugging (the failed attempts preserved in the archived notebooks are mine too), the feature engineering, the modeling, the Power BI report, and the Phase I/II documentation in [`docs/`](docs/).
 
 The later reorganization — extracting that existing notebook logic into the tested package under `src/` and writing its test suite — was done with AI-assisted tooling, which I directed and reviewed. It preserves the original work rather than replacing it: every algorithm, transformation, and hyperparameter in the package traces back to a specific notebook cell, and the [Deviations](#deviations-from-the-original-notebooks) section lists everything that differs.
 

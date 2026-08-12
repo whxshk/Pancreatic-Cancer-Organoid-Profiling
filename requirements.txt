@@ -12,6 +12,3 @@ scikit-learn>=1.2
 
 # Testing
 pytest>=7.4
-
-# Used only by the preserved notebooks in notebooks/
-matplotlib>=3.6
